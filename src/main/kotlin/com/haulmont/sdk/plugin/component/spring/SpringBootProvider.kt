@@ -34,7 +34,7 @@ class SpringBootProvider : BintraySearchComponentProvider() {
 
     override fun getName() = "Spring boot starter"
 
-    override fun getComponent(template: Component): Component {
+    override fun createFromTemplate(template: Component): Component {
         return template
     }
 
@@ -48,7 +48,7 @@ class SpringBootProvider : BintraySearchComponentProvider() {
                     type = getType()
                 )
                 2 -> {
-                    val mAddon = innerComponents()
+                    val mAddon = components()
                         ?.find { addon -> addon.id == it[0] }
                     if (mAddon != null) {
                         val copy = mAddon.clone()
@@ -62,16 +62,16 @@ class SpringBootProvider : BintraySearchComponentProvider() {
         }
     }
 
-    override fun availableVersions(componentId: String?): List<Option<String>> {
-        innerComponents()
+    override fun versions(componentId: String?): List<Option<String>> {
+        components()
             ?.find { addon -> addon.id == componentId }
             ?.let {
-                return super.availableVersions("${it.groupId}:${it.artifactId}")
+                return super.versions("${it.groupId}:${it.artifactId}")
             }
         return emptyList()
     }
 
-    override fun innerComponents(): List<Component>? {
+    override fun components(): List<Component>? {
         val components = mutableListOf<Component>()
         springComponentsInfo?.let { springComponentsInfo ->
             for (category in springComponentsInfo.initializr.dependencies) {
